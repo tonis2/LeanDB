@@ -1,54 +1,54 @@
+
+
 export default class Query {
-  constructor(name, database) {
-    this.add = this.add.bind(this, database, name);
-    this.find = this.find.bind(this, database, name);
+  constructor(name, version, db) {
+    this.name = name;
+    this.version = version;
+    this.db = db;
   }
 
-  async add(database, name, data) {
-    return new Promise((resolve, reject) => {
-      database.onsuccess = async event => {
-        const db = event.target.result;
-        const transaction = await db.transaction(name, "readwrite");
-        let result = transaction.objectStore(name).put(data);
-        result.onerror = error => {
-          reject(error);
-        };
-        result.onsuccess = event => {
-          resolve(event.target.result);
-        };
+  async add(data) {
+    return new Promise(async (resolve, reject) => {
+      const db = await this.db;
+      const transaction = await db.transaction(this.name, "readwrite");
+      let result = await transaction.objectStore(this.name).put(data);
+      result.onerror = error => {
+        reject(error);
       };
-    });
+      result.onsuccess = event => {
+        resolve(event.target.result);
+      };
+    })
   }
 
-  delete(key) {}
+  delete(key) { }
 
-  update(key) {}
+  update(key) { }
 
-  find(database, name, query) {
-    return new Promise((resolve, reject) => {
-      database.onsuccess = async event => {
-        const db = event.target.result;
-        const transaction = await db.transaction(name, "readwrite");
-        let result = transaction.objectStore(name);
-        const getCursorRequest = result.openCursor();
+  async find(query) {
+    return new Promise( async (resolve, reject) => {
+      const db = await this.db;
+      const transaction = await db.transaction(this.name, "readwrite");
+      let result = await transaction.objectStore(this.name);
+      const getCursorRequest = result.openCursor();
 
-        getCursorRequest.onerror = error => {
-          reject(error);
-        };
+      getCursorRequest.onsuccess = event => {
+        const cursor = event.target.result;
+        if (cursor) {
+          const matching_query = Object.keys(query)
+            .map(key => Object.is(cursor.value[key], query[key]))
+            .filter(result => !result);
 
-        getCursorRequest.onsuccess = event => {
-          const cursor = event.target.result;
-          if (cursor) {
-            const matching_query = Object.keys(query)
-              .map(key => Object.is(cursor.value[key], query[key]))
-              .filter(result => !result);
-            if (matching_query.length < 1) resolve(cursor.value);
-            else cursor.continue();
-          } else {
-            console.log("Exhausted all documents");
-          }
-        };
+          if (matching_query.length < 1) resolve(cursor.value);
+          else cursor.continue();
+        } else {
+          resolve([])
+        }
+      }
+
+      getCursorRequest.onerror = error => {
+        reject(error);
       };
-    });
+    })
   }
 }
