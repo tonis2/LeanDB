@@ -13,6 +13,13 @@ LeanDB will help you here, it provides easy to use API, small JavaScript footpri
 
 #### Add database to your project 
 
+```
+npm install leandb --save
+```
+
+or in modern browsers
+
+
 ```JS
 import Database from "https://unpkg.com/leandb@1.0.1/build/leandb.esm.js"
 
