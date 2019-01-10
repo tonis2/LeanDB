@@ -1,8 +1,8 @@
 {
   "name": "leandb",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
-  "main": "rollup.config.js",
+  "main": "/build/leandb.esm.js",
   "directories": {
     "example": "examples",
     "test": "tests",
