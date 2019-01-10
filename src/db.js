@@ -1,3 +1,7 @@
+
+/*
+Provides Async wrapper for indexedDB
+*/
 export default class DB {
   constructor(name, version, upgrade) {
     this.name = name;

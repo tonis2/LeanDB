@@ -1,0 +1,35 @@
+{
+  "name": "leandb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "rollup.config.js",
+  "directories": {
+    "example": "examples",
+    "test": "tests",
+    "src": "src"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "find ./src/index.js | xargs prettier  --write",
+    "build": "rollup -c rollup.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tonis2/LeanDB.git"
+  },
+  "author": "tonis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tonis2/LeanDB/issues"
+  },
+  "homepage": "https://github.com/tonis2/LeanDB#readme",
+  "devDependencies": {
+    "browserify": "latest",
+    "prettier": "1.14.3",
+    "rollup": "latest",
+    "rollup-plugin-terser": "^4.0.2",
+    "tap-diff": "^0.1.1",
+    "tape": "latest",
+    "tape-run": "^4.0.0"
+  }
+}
