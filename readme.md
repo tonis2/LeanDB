@@ -59,4 +59,8 @@ db.friends.delete({name: "Roger"})
 db.friends.find({name:"Roger", age:5}).then(result => {
   console.log(result)
 })
+
+const data = await db.friends.find({name:"Steve"})
+
+console.log(data)
 ```
