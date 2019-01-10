@@ -27,7 +27,7 @@ import Database from "https://unpkg.com/leandb@1.0.1/build/leandb.esm.js"
 
 
 
- #### Inittialize
+ #### Initialize
 
 ```JS
 const stores = {
