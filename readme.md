@@ -6,6 +6,8 @@ Want to use indexedDB in browser but the API seems too hard to manage ?
 
 LeanDB will help you here, it provides easy to use API, small JavaScript footprint and if fully dependency free.
 
+![gzip size](http://img.badgesize.io/https://unpkg.com/leandb@latest/build/leandb.esm.js?compression=gzip)
+
 
 #### Add database to your project 
 
@@ -17,7 +19,7 @@ or in modern browsers
 
 
 ```JS
-import Database from "https://unpkg.com/leandb@1.0.1/build/leandb.esm.js"
+import Database from "https://unpkg.com/leandb@latest/build/leandb.esm.js"
 
 ```
 
