@@ -12,10 +12,19 @@ export default class Database {
         const name = entry[0]
         const keys = entry[1].split(",")
 
-        let store = await database.createObjectStore(name, {
-          autoIncrement: true
+        let auto_increment = /d\++/.test(keys[0])
+
+        // Remove ++ from the key, or else keypath will error
+        if (auto_increment) keys[0] = keys[0].replace("++", "")
+
+        let store = await database.createObjectStore(name, { keyPath: keys[0], autoIncrement: auto_increment })
+
+        // Remove & from the key, or else key will error
+        keys.forEach(key => {
+          let unique = /&/i.test(key)
+          if (unique) key = key.replace("&", "")
+          store.createIndex(key, key, { unique: unique })
         })
-        keys.forEach(key => store.createIndex(key, key, { unique: false }))
       })
     })
 

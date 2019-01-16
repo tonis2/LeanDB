@@ -7,10 +7,6 @@ Want to use indexedDB in browser but the API seems too hard to manage ?
 LeanDB will help you here, it provides easy to use API, small JavaScript footprint, dependency free build.
 
 
-
-
-
-
 #### Add database to your project 
 
 ```
@@ -26,12 +22,18 @@ import Database from "https://unpkg.com/leandb@1.0.1/build/leandb.esm.js"
 ```
 
 
-
  #### Initialize
+
+Store properties
+
+* `++` : <strong>Auto incrementation</strong>
+* `&` : <strong>Must be unique value</strong>
+
+
 
 ```JS
 const stores = {
-  friends: "id,name,age",
+  friends: "id++,name&,age",
   notebooks: "id,name,content"
 }
 
@@ -41,6 +43,7 @@ db.init(1, stores)
 
 ```
 
+
 #### Add data
 
 ```JS
@@ -48,8 +51,6 @@ db.friends.add({ "name": "Steve", age: 5, id: 1 })
 db.friends.add({ "name": "Roger", age: 2, id: 2 })
 
 ```
-
-
 
  #### Update data with new value where query matches
 
@@ -59,7 +60,6 @@ db.friends.update({name:"Steve"}).value({age:7}).then(result => {
 })
 
 ```
-
 
 #### Delete data where query matches
 
