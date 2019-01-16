@@ -4,7 +4,7 @@
 
 Want to use indexedDB in browser but the API seems too hard to manage ? 
 
-LeanDB will help you here, it provides easy to use API, small JavaScript footprint, dependency free build.
+LeanDB will help you here, it provides easy to use API, small JavaScript footprint and if fully dependency free.
 
 
 #### Add database to your project 
