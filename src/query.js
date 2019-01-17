@@ -90,25 +90,57 @@ export default class Query {
     return new Promise(async (resolve, reject) => {
       const transaction = await new Transaction(this.db, this.name, "readwrite")
       const store = await transaction.objectStore(this.name)
-      const openCursor = store.openCursor()
-      const results = []
-      openCursor.onsuccess = event => {
-        const cursor = event.target.result
+    })
+  }
 
-        if (cursor) {
-          const matching_query = Object.keys(query)
-            .map(key => Object.is(cursor.value[key], query[key]))
-            .filter(result => !result)
+  async all() {
+    return new Promise(async resolve => {
+      const transaction = await new Transaction(this.db, this.name, "readwrite")
+      const store = await transaction.objectStore(this.name)
+      store.getAll().onsuccess = event => {
+        resolve(event.target.result)
+      }
+    })
+  }
 
-          if (matching_query.length < 1) results.push(cursor.value)
-          cursor.continue()
-        } else {
-          resolve(results)
+  /*
+   Finds data from your database, different method
+  */
+  async search(query, count) {
+    return new Promise(async resolve => {
+      const transaction = await new Transaction(this.db, this.name, "readwrite")
+      let store = await transaction.objectStore(this.name)
+
+      if (query && !query.index) {
+        const openCursor = store.openCursor()
+        const results = []
+        openCursor.onsuccess = event => {
+          const cursor = event.target.result
+
+          if (cursor) {
+            const matching_query = Object.keys(query)
+              .map(key => Object.is(cursor.value[key], query[key]))
+              .filter(result => !result)
+
+            if (matching_query.length < 1) results.push(cursor.value)
+            cursor.continue()
+          } else {
+            resolve(results)
+          }
         }
       }
 
-      openCursor.onerror = error => {
-        reject(`Failed to apply search in ${this.name}`)
+      if (query && query.index) {
+        store = store.index(query.index)
+        store.getAll(query.key, count).onsuccess = event => {
+          resolve(event.target.result)
+        }
+      }
+
+      if (!query) {
+        store.getAll(null, count).onsuccess = event => {
+          resolve(event.target.result)
+        }
       }
     })
   }

@@ -1,5 +1,6 @@
 import Query from "./query.js"
 import indexDB from "./db.js"
+import query from "./parser.js"
 
 export default class Database {
   constructor(name) {
@@ -33,3 +34,5 @@ export default class Database {
     return this
   }
 }
+
+export { query }
