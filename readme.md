@@ -1,4 +1,4 @@
-### Lean indexedDB wrapper
+### Lean indexedDB using library
 -----
 
 
