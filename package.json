@@ -1,6 +1,6 @@
 {
   "name": "leandb",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "ES6 indexedDB library",
   "main": "/build/leandb.esm.js",
   "directories": {

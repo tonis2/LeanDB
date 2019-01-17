@@ -72,11 +72,30 @@ db.friends.delete({name: "Roger"})
 #### Find data where query matches
 
 ```JS
-db.friends.find({name:"Roger", age:5}).then(result => {
+db.friends.search({name:"Roger", age:5}).then(result => {
   console.log(result)
 })
 
 const data = await db.friends.find({name:"Steve"})
 
 console.log(data)
+```
+
+
+#### Query data
+
+Add query to library requirements 
+
+```JS 
+import Database, { query } from "https://unpkg.com/leandb@latest/build/leandb.esm.js"
+```
+
+```JS
+
+const params = query`age > ${3}`
+
+db.friends.search(params).then(result => {
+  console.log("Age bigger than", result)
+})
+
 ```

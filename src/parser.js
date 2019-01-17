@@ -7,11 +7,11 @@ const idb_key_range = {
 
 export default function query(query, value) {
     let joint_query = [...query].join("")
-    let regex = /^(?<index>[a-z]+) (?<key>[a-z<>]+)/
-    let params = joint_query.match(regex)
+    let regex = /^([a-z]+) ([a-z<>]+)/
+    let [, index, key] = joint_query.match(regex)
 
     return {
-        index:params.groups.index,
-        key: idb_key_range[params.groups.key](value)
+        index:index,
+        key: idb_key_range[key](value)
     }
 }

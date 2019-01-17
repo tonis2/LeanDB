@@ -83,16 +83,6 @@ export default class Query {
     return this
   }
 
-  /*
-   Finds data from your database, requires query like this {"key":value}
-  */
-  async find(query) {
-    return new Promise(async (resolve, reject) => {
-      const transaction = await new Transaction(this.db, this.name, "readwrite")
-      const store = await transaction.objectStore(this.name)
-    })
-  }
-
   async all() {
     return new Promise(async resolve => {
       const transaction = await new Transaction(this.db, this.name, "readwrite")
