@@ -12,7 +12,9 @@ export default class DB {
     const database = indexedDB.open(this.name, this.version || 1)
 
     return new Promise((resolve, reject) => {
-      database.onsuccess = event => resolve(event.target.result)
+      database.onsuccess = event => {
+        resolve(event.target.result)
+      }
       database.onerror = event => reject(event.target.result)
 
       if (upgrade)
@@ -22,4 +24,3 @@ export default class DB {
     })
   }
 }
-

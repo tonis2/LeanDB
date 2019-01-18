@@ -1,5 +1,9 @@
 import Database, { query } from "/src/index.js"
 
+Database.prototype.observer = (change) => {
+  console.log(change)
+}
+
 const stores = {
   friends: "id++,name&,age,profession",
   notebooks: "id,name,content"

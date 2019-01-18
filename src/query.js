@@ -9,18 +9,20 @@ export default class Query {
     this.version = version
     this.db = db
   }
+
   /*
   Add data to selected database, data is basic object {"key": value}
   */
   async add(data) {
     return new Promise(async (resolve, reject) => {
       const transaction = await new Transaction(this.db, this.name, "readwrite")
-      let result = await transaction.objectStore(this.name).put(data)
+      const store = await transaction.objectStore(this.name).put(data)
 
-      result.onerror = event => {
+      store.onerror = event => {
         reject(event.target.error.message)
       }
-      result.onsuccess = event => {
+      store.onsuccess = event => {
+        if (this.db.observer) this.db.observer({ method: "add", source: store.source.name, key: event.target.result })
         resolve(event.target.result)
       }
     })
@@ -33,6 +35,7 @@ export default class Query {
     return new Promise(async resolve => {
       const transaction = await new Transaction(this.db, this.name, "readwrite")
       const store = await transaction.objectStore(this.name).openCursor()
+
       store.onsuccess = event => {
         const cursor = event.target.result
 
@@ -43,6 +46,7 @@ export default class Query {
 
           if (matching_query.length < 1) {
             cursor.delete()
+            if (this.db.observer) this.db.observer({ method: "delete", source: store.source.name, key: cursor.key })
           }
           cursor.continue()
         } else {
@@ -59,11 +63,10 @@ export default class Query {
     this.value = data => {
       return new Promise(async resolve => {
         const transaction = await new Transaction(this.db, this.name, "readwrite")
-        const store = await transaction.objectStore(this.name)
-        const openCursor = store.openCursor()
-        openCursor.onsuccess = event => {
-          const cursor = event.target.result
+        const store = await transaction.objectStore(this.name).openCursor()
 
+        store.onsuccess = event => {
+          const cursor = event.target.result
           if (cursor) {
             const matching_query = Object.keys(query)
               .map(key => Object.is(cursor.value[key], query[key]))
@@ -71,6 +74,7 @@ export default class Query {
 
             if (matching_query.length < 1) {
               cursor.update(Object.assign(cursor.value, data))
+              if (this.db.observer) this.db.observer({ method: "update", source: store.source.name, key: cursor.key })
               resolve(cursor.value)
             }
             cursor.continue()
