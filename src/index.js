@@ -1,6 +1,7 @@
 import Query from "./query.js"
 import indexDB from "./db.js"
 import query from "./parser.js"
+import Transaction from "./transaction.js"
 
 export default class Database {
   constructor(name) {
@@ -8,7 +9,10 @@ export default class Database {
   }
 
   async init(version, schema) {
-    const updates = database => {
+    const updates = async database => {
+      const sync_store = await database.createObjectStore("sync", { keyPath: "id", autoIncrement: true })
+      sync_store.createIndex("date", "date", { unique: false })
+
       Object.entries(schema).forEach(async entry => {
         const name = entry[0]
         const keys = entry[1].split(",")
@@ -28,10 +32,22 @@ export default class Database {
       })
     }
 
-    const db = new indexDB(this.name, this.version, updates)
+    const db = new indexDB(this.name, version, updates)
 
-    db.observer = this.observer
     Object.keys(schema).forEach(name => (this[name] = new Query(name, version, db)))
+
+    if (this.observer) {
+      db.observer = this.observer
+  
+      db.save_to_sync = async (method, source, key) => {
+        const transaction = await new Transaction(db, "sync", "readwrite")
+        const status = { method, source, key, date: new Date().toISOString() }
+        await transaction.objectStore("sync").put(status)
+        return status
+      }
+
+      this["sync"] = new Query("sync", version, db)
+    }
 
     return this
   }

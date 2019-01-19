@@ -21,8 +21,11 @@ export default class Query {
       store.onerror = event => {
         reject(event.target.error.message)
       }
-      store.onsuccess = event => {
-        if (this.db.observer) this.db.observer({ method: "add", source: store.source.name, key: event.target.result })
+      store.onsuccess = async event => {
+        if (this.db.observer && this.name !== "sync") {
+          const status = await this.db.save_to_sync("add", store.source.name, event.target.result)
+          this.db.observer(status)
+        }
         resolve(event.target.result)
       }
     })
@@ -36,7 +39,7 @@ export default class Query {
       const transaction = await new Transaction(this.db, this.name, "readwrite")
       const store = await transaction.objectStore(this.name).openCursor()
 
-      store.onsuccess = event => {
+      store.onsuccess = async event => {
         const cursor = event.target.result
 
         if (cursor) {
@@ -46,7 +49,10 @@ export default class Query {
 
           if (matching_query.length < 1) {
             cursor.delete()
-            if (this.db.observer) this.db.observer({ method: "delete", source: store.source.name, key: cursor.key })
+            if (this.db.observer && this.name !== "sync") {
+              const status = await this.db.save_to_sync("delete", store.source.name, cursor.key)
+              this.db.observer(status)
+            }
           }
           cursor.continue()
         } else {
@@ -65,7 +71,7 @@ export default class Query {
         const transaction = await new Transaction(this.db, this.name, "readwrite")
         const store = await transaction.objectStore(this.name).openCursor()
 
-        store.onsuccess = event => {
+        store.onsuccess = async event => {
           const cursor = event.target.result
           if (cursor) {
             const matching_query = Object.keys(query)
@@ -74,7 +80,10 @@ export default class Query {
 
             if (matching_query.length < 1) {
               cursor.update(Object.assign(cursor.value, data))
-              if (this.db.observer) this.db.observer({ method: "update", source: store.source.name, key: cursor.key })
+              if (this.db.observer && this.name !== "sync") {
+                const status = await this.db.save_to_sync("update", store.source.name, cursor.key)
+                this.db.observer(status)
+              }
               resolve(cursor.value)
             }
             cursor.continue()
@@ -108,7 +117,7 @@ export default class Query {
       if (query && !query.index) {
         const openCursor = store.openCursor()
         const results = []
-        openCursor.onsuccess = event => {
+        openCursor.onsuccess = async event => {
           const cursor = event.target.result
 
           if (cursor) {
