@@ -22,9 +22,9 @@ export default class Query {
         reject(event.target.error.message)
       }
       store.onsuccess = async event => {
-        if (this.db.observer && this.name !== "sync") {
+        if (this.db.observe && this.name !== "sync") {
           const status = await this.db.save_to_sync("add", store.source.name, event.target.result)
-          this.db.observer(status)
+          if (this.observer) this.db.observer(status)
         }
         resolve(event.target.result)
       }
@@ -49,9 +49,9 @@ export default class Query {
 
           if (matching_query.length < 1) {
             cursor.delete()
-            if (this.db.observer && this.name !== "sync") {
+            if (this.db.observe && this.name !== "sync") {
               const status = await this.db.save_to_sync("delete", store.source.name, cursor.key)
-              this.db.observer(status)
+              if (this.observer) this.db.observer(status)
             }
           }
           cursor.continue()
@@ -80,9 +80,10 @@ export default class Query {
 
             if (matching_query.length < 1) {
               cursor.update(Object.assign(cursor.value, data))
-              if (this.db.observer && this.name !== "sync") {
+              if (this.db.observe && this.name !== "sync") {
                 const status = await this.db.save_to_sync("update", store.source.name, cursor.key)
-                this.db.observer(status)
+
+                if (this.observer) this.db.observer(status)
               }
               resolve(cursor.value)
             }

@@ -14,7 +14,8 @@ export default class DB {
     return new Promise((resolve, reject) => {
       database.onsuccess = event => resolve(event.target.result)
       database.onerror = event => reject(event.target.result)
-
+      
+      //When database version is updated
       if (upgrade) database.onupgradeneeded = event => upgrade(event.target.result)
     })
   }

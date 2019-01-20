@@ -1,5 +1,7 @@
 import Database, { query } from "/src/index.js"
 
+
+Database.prototype.observe = true;
 Database.prototype.observer = (change) => {
   console.log(change)
 }
