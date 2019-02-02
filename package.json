@@ -1,6 +1,6 @@
 {
   "name": "leandb",
-  "version": "1.0.5",
+  "version": "1.0.8",
   "description": "ES6 indexedDB library",
   "main": "/build/leandb.esm.js",
   "directories": {
@@ -23,7 +23,7 @@
     "url": "https://github.com/tonis2/LeanDB/issues"
   },
   "homepage": "https://github.com/tonis2/LeanDB#readme",
-  "devDependencies": {
+  "devDependencies": { 
     "browserify": "latest",
     "prettier": "1.14.3",
     "rollup": "latest",

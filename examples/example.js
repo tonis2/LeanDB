@@ -2,7 +2,7 @@ import Database, { query } from "/src/index.js"
 
 
 Database.prototype.observe = true;
-Database.prototype.observer = (change) => {
+Database.prototype.onchange = (change) => {
   console.log(change)
 }
 
@@ -14,6 +14,8 @@ const stores = {
 const db = new Database("test")
 
 db.init(1, stores)
+
+console.log(db)
 
 db.friends.add({ name: "Steve", age: 2, profession: "developer" })
 db.friends.add({ name: "Roger", age: 2, profession: "developer" })

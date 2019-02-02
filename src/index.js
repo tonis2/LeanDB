@@ -45,12 +45,12 @@ export default class Database {
 
     //Add observing settings
     db.observe = this.observe
-    db.observer = this.observer
+    db.onchange = this.onchange
+    this["sync"] = new Query("sync", version, db)
     
     if (this.observe) {
       //This function is used to save database updates to sync table, so data could be sync with server
       db.save_to_sync = async (method, source, key) => {
-        this["sync"] = new Query("sync", version, db)
         const transaction = await new Transaction(db, "sync", "readwrite")
         const status = { method, source, key, date: new Date().toISOString() }
         await transaction.objectStore("sync").put(status)

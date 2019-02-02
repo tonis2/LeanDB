@@ -24,7 +24,7 @@ export default class Query {
       store.onsuccess = async event => {
         if (this.db.observe && this.name !== "sync") {
           const status = await this.db.save_to_sync("add", store.source.name, event.target.result)
-          if (this.observer) this.db.observer(status)
+          if (this.db.onchange) this.db.onchange(status)
         }
         resolve(event.target.result)
       }
@@ -51,7 +51,7 @@ export default class Query {
             cursor.delete()
             if (this.db.observe && this.name !== "sync") {
               const status = await this.db.save_to_sync("delete", store.source.name, cursor.key)
-              if (this.observer) this.db.observer(status)
+              if (this.db.onchange) this.db.onchange(status)
             }
           }
           cursor.continue()
@@ -83,7 +83,7 @@ export default class Query {
               if (this.db.observe && this.name !== "sync") {
                 const status = await this.db.save_to_sync("update", store.source.name, cursor.key)
 
-                if (this.observer) this.db.observer(status)
+                if (this.db.onchange) this.db.onchange(status)
               }
               resolve(cursor.value)
             }
